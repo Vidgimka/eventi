@@ -2,6 +2,7 @@ package user_transport_http
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -20,6 +21,6 @@ type CreateUserResponse struct {
 func (h *UserHTTPHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var responce CreateUserResponse
 	if err := json.NewDecoder(r.Body).Decode(&responce); err != nil {
-
+		fmt.Println("Error")
 	}
 }
