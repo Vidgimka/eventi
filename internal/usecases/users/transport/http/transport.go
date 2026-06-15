@@ -10,7 +10,7 @@ type UserHTTPHandler struct {
 	userService UserService
 }
 
-type UserService struct {
+type UserService interface {
 }
 
 func NewUserHTTPHandler(userService UserService) *UserHTTPHandler {

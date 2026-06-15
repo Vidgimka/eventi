@@ -3,6 +3,9 @@ export
 PROJECT_ROOT := $(subst \,/,$(CURDIR))
 export PROJECT_ROOT
 
+LOGGER_FOLDER := ${PROJECT_ROOT}/out/logs
+export LOGGER_FOLDER	
+
 env-up:
 	@docker compose up -d eventi_postgres
 env-down: 
@@ -50,4 +53,5 @@ migrate-action:
 	"${action}"
 
 app-run:
-	@go run cmd/eventi/main.go
+	@go mod tidy && \
+	go run cmd/eventi/main.go

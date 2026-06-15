@@ -1,7 +1,41 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+
+	core_logger "github.com/Vidgimka/eventi/internal/core/logger"
+	core_http_server "github.com/Vidgimka/eventi/internal/core/transport/http/server"
+	user_transport_http "github.com/Vidgimka/eventi/internal/usecases/users/transport/http"
+	"go.uber.org/zap"
+)
 
 func main() {
-	fmt.Println("Hello eventi")
+	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer cancel()
+
+	logger, err := core_logger.NewLogger(core_logger.NewConfigMust())
+	if err != nil {
+		fmt.Println("failed init to application logger:", err)
+		os.Exit(1)
+	}
+	defer logger.Close()
+
+	logger.Debug("Starting eventi app")
+
+	userTransportHTTP := user_transport_http.NewUserHTTPHandler(nil)
+	usersRouters := userTransportHTTP.Routes()
+
+	apiVertionRouter := core_http_server.NewAPIVersionRouter(core_http_server.ApiVertion1)
+	apiVertionRouter.RegisterRouts(usersRouters...)
+
+	httpServer := core_http_server.NewHTTPServer(core_http_server.NewConfigMust(), logger)
+	httpServer.RegisterAPIRouters(apiVertionRouter)
+	if err := httpServer.Run(ctx); err != nil {
+		logger.Error("HTTP server run error", zap.Error(err))
+	}
+
 }

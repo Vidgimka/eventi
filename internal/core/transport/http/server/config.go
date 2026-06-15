@@ -8,8 +8,8 @@ import (
 )
 
 type Config struct {
-	Addr            string        `envconfig:"ADDR" requared:"true"`
-	ShutdownTimeout time.Duration `envconfig:"SHUTDOWN_TIMEOUT" requared:"true"`
+	Addr            string        `envconfig:"ADDR" required:"true"`
+	ShutdownTimeout time.Duration `envconfig:"SHUTDOWN_TIMEOUT" required:"true"`
 }
 
 func NewConfig() (Config, error) {

@@ -21,7 +21,7 @@ func FromContext(ctx context.Context) *Logger {
 
 	log, ok := ctx.Value("log").(*Logger)
 	if !ok {
-		panic("no logger with context")
+		panic("no logger in context")
 	}
 
 	return log
@@ -29,15 +29,15 @@ func FromContext(ctx context.Context) *Logger {
 
 func NewLogger(config Config) (*Logger, error) {
 	zaplvl := zap.NewAtomicLevel()
-	if err := zaplvl.UnmarshalText([]byte(config.loglevel)); err != nil {
+	if err := zaplvl.UnmarshalText([]byte(config.Loglevel)); err != nil {
 		return nil, fmt.Errorf("unmarshal log level: %w", err)
 	}
 
-	if err := os.MkdirAll(config.logfolder, 0755); err != nil {
+	if err := os.MkdirAll(config.Logfolder, 0755); err != nil {
 		return &Logger{}, fmt.Errorf("mkdir log folder: %w", err)
 	}
 	timestamp := time.Now().UTC().Format("2006-01-02T15-04-05.000000")
-	logFilePath := filepath.Join(config.logfolder, fmt.Sprintf("%s.log", timestamp))
+	logFilePath := filepath.Join(config.Logfolder, fmt.Sprintf("%s.log", timestamp))
 
 	LogFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
