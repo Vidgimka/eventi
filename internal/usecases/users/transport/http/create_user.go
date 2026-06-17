@@ -24,7 +24,7 @@ func (h *UserHTTPHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 
-	log.Debug("invoce  CreateUser handler")
+	log.Debug("invoke  CreateUser handler")
 
 	var responce CreateUserResponse
 	if err := json.NewDecoder(r.Body).Decode(&responce); err != nil {
